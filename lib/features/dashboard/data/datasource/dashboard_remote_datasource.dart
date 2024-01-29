@@ -1,6 +1,7 @@
 import 'package:flutter_project/shared/data/remote/remote.dart';
 import 'package:flutter_project/shared/domain/models/either.dart';
 import 'package:flutter_project/shared/domain/models/paginated_response.dart';
+import 'package:flutter_project/shared/domain/models/product/product_model.dart';
 import 'package:flutter_project/shared/exceptions/http_exception.dart';
 import 'package:flutter_project/shared/globals.dart';
 
@@ -9,6 +10,8 @@ abstract class DashboardDatasource {
       {required int skip});
   Future<Either<AppException, PaginatedResponse>> searchPaginatedProducts(
       {required int skip, required String query});
+  Future<Either<AppException, Product>> getDetailProduct(
+      {required int id});
 }
 
 class DashboardRemoteDatasource extends DashboardDatasource {
@@ -73,6 +76,35 @@ class DashboardRemoteDatasource extends DashboardDatasource {
         final paginatedResponse =
             PaginatedResponse.fromJson(jsonData, jsonData['products'] ?? []);
         return Right(paginatedResponse);
+      },
+    );
+  }
+
+
+  @override
+  Future<Either<AppException, Product>> getDetailProduct(
+      {required int id}) async {
+    final response = await networkService.get(
+      '/products/$id',
+    );
+
+    return response.fold(
+      (l) => Left(l),
+      (r) {
+        final product =
+            Product.fromJson(r.data);
+        
+        if (r.data == null) {
+          return Left(
+            AppException(
+              identifier: 'getDetailProduct',
+              statusCode: 0,
+              message: 'The data is not in the valid format.',
+            ),
+          );
+        }
+
+        return Right(product);
       },
     );
   }

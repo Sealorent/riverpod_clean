@@ -93,6 +93,38 @@ class DashboardNotifier extends StateNotifier<DashboardState> {
     });
   }
 
+  void getProductDetail(int id) async {
+    state = state.copyWith(
+      state: DashboardConcreteState.loading,
+      isLoading: true,
+    );
+
+    final response = await dashboardRepository.getDetailProduct(id : id);
+  
+
+    response.fold((failure) {
+      state = state.copyWith(
+        state: DashboardConcreteState.failure,
+        message: failure.message,
+        isLoading: false,
+      );
+    }, (data) {
+      state = state.copyWith(
+        product: data,
+        state: DashboardConcreteState.detailProduct,
+        hasData: true,
+        message: '',
+        isLoading: false,
+      );
+    });
+  }
+  
+  void getBack(){
+    state = state.copyWith(
+      state: DashboardConcreteState.fetchedAllProducts,
+      isLoading: false,
+    );
+  }
   void resetState() {
     state = const DashboardState.initial();
   }

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_project/features/dashboard/presentation/providers/dashboard_state_provider.dart';
 import 'package:flutter_project/features/dashboard/presentation/providers/state/dashboard_state.dart';
 import 'package:flutter_project/features/dashboard/presentation/widgets/dashboard_drawer.dart';
+import 'package:flutter_project/routes/app_route.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 @RoutePage()
@@ -65,8 +66,14 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 .showSnackBar(SnackBar(content: Text(next.message.toString())));
           }
         }
+
+        if (next.state == DashboardConcreteState.detailProduct) {
+          AutoRouter.of(context)
+              .pushAndPopUntil(const DetailRoute(), predicate: (_) => false);
+        }
       }),
     );
+    
     return Scaffold(
       appBar: AppBar(
         title: isSearchActive
@@ -145,6 +152,13 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
+                              onTap: () {
+                                ref
+                                    .read(dashboardNotifierProvider.notifier)
+                                    .getProductDetail(product.id);
+                                    
+                                
+                              },
                             );
                           },
                         ),

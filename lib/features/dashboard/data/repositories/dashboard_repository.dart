@@ -20,4 +20,11 @@ class DashboardRepositoryImpl extends DashboardRepository {
     return dashboardDatasource.searchPaginatedProducts(
         skip: skip, query: query);
   }
+
+  @override
+  Future<Either<AppException, dynamic>> getDetailProduct({required int id}) {
+    return dashboardDatasource.getDetailProduct(id: id);
+  }
+
+  
 }

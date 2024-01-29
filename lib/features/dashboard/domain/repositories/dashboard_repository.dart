@@ -7,4 +7,5 @@ abstract class DashboardRepository {
       {required int skip});
   Future<Either<AppException, PaginatedResponse>> searchProducts(
       {required int skip, required String query});
+  Future<Either<AppException, dynamic>> getDetailProduct({required int id});
 }
